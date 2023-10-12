@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
     # ------ load models ------
     segnet = Unet(c_in=1, c_out=3).to(device)
-    segnet.load_state_dict(torch.load(model_dir+'model_seg_'+data_name+'_'+tag+'.pt'))
+    segnet.load_state_dict(torch.load(model_dir+'model_seg_'+data_name+'_'+tag+'.pt', map_location=device))
 
     if test_type == 'pred' or test_type == 'eval':
         T = torch.Tensor([0,1]).to(device)
@@ -202,8 +202,8 @@ if __name__ == '__main__':
             # mesh_gm = trimesh.Trimesh(v_gm_pred, f_gm_pred)
             # mesh_wm.export(result_dir+'wm_'+data_name+'_'+surf_hemi+'_'+subid+'.stl')
             # mesh_gm.export(result_dir+'gm_'+data_name+'_'+surf_hemi+'_'+subid+'.obj')
-
             # save the surfaces in FreeSurfer format
+            os.makedirs(result_dir, exist_ok=True)
             nib.freesurfer.io.write_geometry(result_dir+data_name+'_'+surf_hemi+'_'+subid+'.white',
                                              v_wm_pred, f_wm_pred)
             nib.freesurfer.io.write_geometry(result_dir+data_name+'_'+surf_hemi+'_'+subid+'.pial',
